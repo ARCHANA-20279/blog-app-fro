@@ -1,165 +1,66 @@
-import React from 'react'
-import { useState } from 'react'
-import axios from 'axios'
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import Navbar from './Nav';
 
-const Signup = () => {
+function Signup() {
+  const navigate = useNavigate();
+  const [input, setInput] = useState({ name: '', phone: '', email: '', password: '', confirmPassword: '' });
 
-    const [input, changeInput] = useState({
-        name: '',
-        phone: '',
-        password: '',
-        email: '',
-        confirmPassword: ''
-    })
+  const inputHandler = (e) => {
+    setInput({ ...input, [e.target.name]: e.target.value });
+  };
 
-    const inputHandler = (event) => {
-        changeInput({
-            ...input,
-            [event.target.name]: event.target.value
-        })
+  const readValues = async () => {
+    if (input.password !== input.confirmPassword) {
+      alert("Error: Passwords structural discrepancy detected.");
+      return;
     }
-
-    const readValue = () => {
-
-        if (input.password === input.confirmPassword) {
-
-            console.log(input)
-
-            let newInput = {
-                name: input.name,
-                phone: input.phone,
-                email: input.email,
-                password: input.password
-            }
-
-            axios.post("http://localhost:3000/signup", newInput)
-                .then((response) => {
-
-                    console.log(response.data)
-
-                    if (response.data.status === "success") {
-
-                        alert("Signup Successful")
-
-                        changeInput({
-                            name: '',
-                            phone: '',
-                            password: '',
-                            email: '',
-                            confirmPassword: ''
-                        })
-
-                    } else {
-
-                        alert("Signup Failed")
-
-                        changeInput({
-                            name: '',
-                            phone: '',
-                            password: '',
-                            email: '',
-                            confirmPassword: ''
-                        })
-                    }
-
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
-
-        } else {
-            alert("Password and Confirm Password should be same")
-        }
+    const payload = { name: input.name, phone: input.phone, email: input.email, password: input.password };
+    try {
+      const response = await axios.post('http://localhost:3030/api/signup', payload);
+      if (response.data.status === "success") {
+        alert("Success: Account successfully allocated.");
+        navigate('/');
+      } else {
+        alert("Failure state: " + response.data.status);
+      }
+    } catch (err) {
+      console.error(err);
     }
+  };
 
-    return (
-        <div className="container">
-            <div className="row">
-                <div className="col-12">
-
-                    <div className="row">
-
-                        <div className="col-12">
-                            <label className="form-label">Name</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Name"
-                                name="name"
-                                value={input.name}
-                                onChange={inputHandler}
-                            />
-                        </div>
-
-                        <div className="col-12">
-                            <label className="form-label">Phone</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Phone"
-                                name="phone"
-                                value={input.phone}
-                                onChange={inputHandler}
-                            />
-                        </div>
-
-                        <div className="col-12">
-                            <label className="form-label">Email</label>
-                            <input
-                                type="email"
-                                className="form-control"
-                                placeholder="Email"
-                                name="email"
-                                value={input.email}
-                                onChange={inputHandler}
-                            />
-                        </div>
-
-                        <div className="col-12">
-                            <label className="form-label">Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                placeholder="Password"
-                                name="password"
-                                value={input.password}
-                                onChange={inputHandler}
-                            />
-                        </div>
-
-                        <div className="col-12">
-                            <label className="form-label">Confirm Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                placeholder="Confirm Password"
-                                name="confirmPassword"
-                                value={input.confirmPassword}
-                                onChange={inputHandler}
-                            />
-                        </div>
-
-                        <div className="col-12 mt-3">
-                            <button
-                                className="btn btn-primary"
-                                onClick={readValue}
-                            >
-                                Signup
-                            </button>
-                        </div>
-
-                        <div className="col-12 mt-3">
-                            <a href="/signin" className="btn btn-secondary">
-                                Login
-                            </a>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
+  return (
+    <div className="container mt-5">
+        <Navbar/>
+      <div className="row justify-content-center">
+        <div className="col-md-6 border rounded p-4 bg-light shadow-sm">
+          <h2 className="mb-4 text-center">Registration</h2>
+          <div className="mb-3">
+            <label className="form-label">Name</label>
+            <input className="form-control" name="name" onChange={inputHandler} />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Phone</label>
+            <input className="form-control" name="phone" onChange={inputHandler} />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Email</label>
+            <input className="form-control" name="email" onChange={inputHandler} />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Password</label>
+            <input className="form-control" type="password" name="password" onChange={inputHandler} />
+          </div>
+          <div className="mb-4">
+            <label className="form-label">Confirm Password</label>
+            <input className="form-control" type="password" name="confirmPassword" onChange={inputHandler} />
+          </div>
+          <button className="btn btn-success w-100" onClick={readValues}>Register Profile</button>
         </div>
-    )
+      </div>
+    </div>
+  );
 }
 
-export default Signup
+export default Signup;
