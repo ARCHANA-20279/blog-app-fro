@@ -1,125 +1,165 @@
-import axios from 'axios'
 import React from 'react'
 import { useState } from 'react'
-
-
+import axios from 'axios'
 
 const Signup = () => {
-    const [input,changeInput] = useState({
-        "name": '',
-        "phone": '',
-        "password": '',
-        "email": '',
-        "confirmPassword": ''
-      
+
+    const [input, changeInput] = useState({
+        name: '',
+        phone: '',
+        password: '',
+        email: '',
+        confirmPassword: ''
     })
+
     const inputHandler = (event) => {
-     changeInput({...input,[event.target.name]: event.target.value})
-
-    }
-    const readValue =()=>{
-
-if(input.password === input.confirmPassword){
-    console.log(input)
-    let newInput = {
-        "name": input.name,
-        "phone": input.phone,
-        "email": input.email,
-        "password": input.password
+        changeInput({
+            ...input,
+            [event.target.name]: event.target.value
+        })
     }
 
-axios.post("http://localhost:3000/signup",newInput).then(
+    const readValue = () => {
 
-    (response)=>{
-        console.log(response.data)
-if (response.data.status === "success"){
+        if (input.password === input.confirmPassword) {
 
-    changeInput({
-        "name": '',
-        "phone": '',
-        "password": '',
-        "email": '',
-        "confirmPassword": ''
-    })
+            console.log(input)
 
-}else{
-    alert("Signup failed")
-    changeInput({
-        "name": '',
-        "phone": '',
-        "password": '',
-        "email": '',
-        "confirmPassword": ''
-    })
-}
+            let newInput = {
+                name: input.name,
+                phone: input.phone,
+                email: input.email,
+                password: input.password
+            }
 
+            axios.post("http://localhost:3000/signup", newInput)
+                .then((response) => {
 
+                    console.log(response.data)
+
+                    if (response.data.status === "success") {
+
+                        alert("Signup Successful")
+
+                        changeInput({
+                            name: '',
+                            phone: '',
+                            password: '',
+                            email: '',
+                            confirmPassword: ''
+                        })
+
+                    } else {
+
+                        alert("Signup Failed")
+
+                        changeInput({
+                            name: '',
+                            phone: '',
+                            password: '',
+                            email: '',
+                            confirmPassword: ''
+                        })
+                    }
+
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+
+        } else {
+            alert("Password and Confirm Password should be same")
+        }
     }
-).catch((error)=>{
-    console.log(error)
-})
 
-
-}else{
-        alert("password and confirm password should be same")
-    }
-}
-  return (
-    <div>
-
-<div className="container">
-    <div className="row">
-        <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
-
+    return (
+        <div className="container">
             <div className="row">
-                <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+                <div className="col-12">
 
-                    <label htmlFor="" className="form-label">name</label>
-                    <input type="text" className="form-control" placeholder='name'
-                    name="name" value={input.name} onChange={inputHandler} />
+                    <div className="row">
+
+                        <div className="col-12">
+                            <label className="form-label">Name</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Name"
+                                name="name"
+                                value={input.name}
+                                onChange={inputHandler}
+                            />
+                        </div>
+
+                        <div className="col-12">
+                            <label className="form-label">Phone</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Phone"
+                                name="phone"
+                                value={input.phone}
+                                onChange={inputHandler}
+                            />
+                        </div>
+
+                        <div className="col-12">
+                            <label className="form-label">Email</label>
+                            <input
+                                type="email"
+                                className="form-control"
+                                placeholder="Email"
+                                name="email"
+                                value={input.email}
+                                onChange={inputHandler}
+                            />
+                        </div>
+
+                        <div className="col-12">
+                            <label className="form-label">Password</label>
+                            <input
+                                type="password"
+                                className="form-control"
+                                placeholder="Password"
+                                name="password"
+                                value={input.password}
+                                onChange={inputHandler}
+                            />
+                        </div>
+
+                        <div className="col-12">
+                            <label className="form-label">Confirm Password</label>
+                            <input
+                                type="password"
+                                className="form-control"
+                                placeholder="Confirm Password"
+                                name="confirmPassword"
+                                value={input.confirmPassword}
+                                onChange={inputHandler}
+                            />
+                        </div>
+
+                        <div className="col-12 mt-3">
+                            <button
+                                className="btn btn-primary"
+                                onClick={readValue}
+                            >
+                                Signup
+                            </button>
+                        </div>
+
+                        <div className="col-12 mt-3">
+                            <a href="/signin" className="btn btn-secondary">
+                                Login
+                            </a>
+                        </div>
+
+                    </div>
+
                 </div>
-                <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
-                    <label htmlFor="" className="form-label">phone</label>
-                    <input type="text" className="form-control" placeholder='phone' 
-                    name="phone" value={input.phone} onChange={inputHandler} />
-                </div>
-                <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
-                    <label htmlFor="" className="form-label">email</label>
-                    <input type="text" className="form-control" placeholder='email' 
-                    name="email" value={input.email} onChange={inputHandler} />
-                </div>
-                <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
-                    <label htmlFor="" className="form-label">password</label>
-                    <input type="password" className="form-control" placeholder='password' 
-                    name="password" value={input.password} onChange={inputHandler} />
-                </div>
-                <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
-                    <label htmlFor="" className="form-label">confirm password</label>
-                    <input type="password" className="form-control" placeholder='confirm password' 
-                    name="confirmPassword" value={input.confirmPassword} onChange={inputHandler} />
-                </div>
-                <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
-                    <button className="btn btn-primary" onClick={readValue}>
-                        Signup
-                    </button>
-                </div>
-                
-                <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
-                    <a href="/" className="btn btn-primary">
-                        Login
-                    </a>
-                </div>
-                <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12"></div>
             </div>
         </div>
-    </div>
-</div>
-
-
-
-    </div>
-  )
+    )
 }
-
 
 export default Signup
